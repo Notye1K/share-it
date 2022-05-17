@@ -7,7 +7,11 @@ export const ColorModeContext = React.createContext({
 })
 
 export default function ToggleColorMode({ children }) {
-    const [mode, setMode] = React.useState('light')
+    const savedTheme = localStorage.getItem('theme') || 'light'
+    const [mode, setMode] = React.useState(savedTheme)
+    React.useEffect(() => {
+        localStorage.setItem('theme', mode)
+    }, [mode])
     const colorMode = React.useMemo(
         () => ({
             toggleColorMode: () => {
