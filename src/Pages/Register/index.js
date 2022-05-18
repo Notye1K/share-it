@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 
 import ToggleTheme from '../../Components/ToggleTheme'
@@ -20,6 +20,14 @@ import LoadingContext from '../../Contexts/LoadingContext'
 import { register } from '../../services/userService'
 
 export default function Register() {
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/')
+        }
+    }, [])
+
     const [values, setValues] = useState({
         email: '',
         nickName: '',
@@ -30,8 +38,6 @@ export default function Register() {
 
     const { setOpen, setMessage } = useContext(AlertContext)
     const { stopLoading, startLoading } = useContext(LoadingContext)
-
-    const navigate = useNavigate()
 
     const handleClickShowPassword = () => {
         setValues({

@@ -12,13 +12,21 @@ import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import ToggleTheme from '../../Components/ToggleTheme'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { login } from '../../services/userService'
 import AlertContext from '../../Contexts/AlertContext'
 import LoadingContext from '../../Contexts/LoadingContext'
 
 export default function Login() {
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/')
+        }
+    }, [])
+
     const [values, setValues] = useState({
         emailOrNick: '',
         password: '',
@@ -27,8 +35,6 @@ export default function Login() {
 
     const { setOpen, setMessage } = useContext(AlertContext)
     const { stopLoading, startLoading } = useContext(LoadingContext)
-
-    const navigate = useNavigate()
 
     const handleClickShowPassword = () => {
         setValues({
