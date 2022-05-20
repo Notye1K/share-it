@@ -16,9 +16,11 @@ import {
 } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import Header from '../../Components/Header'
+import Post from '../../Components/Post'
 import AlertContext from '../../Contexts/AlertContext'
 import LoadingContext from '../../Contexts/LoadingContext'
 import { getCategories, postCategory } from '../../services/categoryService'
+import { postPublication } from '../../services/publicationsService'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -44,6 +46,12 @@ const style = {
     p: 4,
 }
 
+const emptyForm = {
+    title: '',
+    link: '',
+    description: '',
+}
+
 let selected = ''
 export default function Publications() {
     const { setOpen, setMessage } = useContext(AlertContext)
@@ -58,9 +66,7 @@ export default function Publications() {
     const [createCategoryInput, setCreateCategoryInput] = useState('')
 
     const [form, setForm] = useState({
-        title: '',
-        link: '',
-        description: '',
+        ...emptyForm,
     })
 
     useEffect(() => {
@@ -134,115 +140,186 @@ export default function Publications() {
     }
     function handleSubmit(event) {
         event.preventDefault()
-        // TODO:
+        if (!form.link && !form.description) {
+            setMessage('Favor preencher um colocar um link ou uma descrição')
+            setOpen(true)
+            return
+        }
+        const body = {
+            ...form,
+            text: form.description,
+            categoryIds: categoriesSelected.map((category) => category.id),
+        }
+        delete body.description
+
+        startLoading()
+        postPublication(body)
+            .then(() => {
+                setForm({ ...emptyForm })
+                setCategoriesSelected([])
+            })
+            .catch((err) => {
+                if (err.response.status === 500) {
+                    setMessage('Houve um problema tente novamente mais tarde')
+                    setOpen(true)
+                } else {
+                    setMessage(err.response.data)
+                    setOpen(true)
+                }
+            })
+            .finally(stopLoading)
     }
     return (
         <>
             <Header />
 
-            <Box>
-                <Container component="form" onSubmit={handleSubmit}>
-                    <Paper elevation={3} sx={{ padding: 1 }}>
+            <Container sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Box>
+                    <Box>
+                        <Container component="form" onSubmit={handleSubmit}>
+                            <Paper
+                                elevation={1}
+                                sx={{ padding: 1, maxWidth: '70vw' }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '1em',
+                                    }}
+                                >
+                                    <TextField
+                                        id="outlined-basic"
+                                        label="titulo"
+                                        variant="outlined"
+                                        value={form.title}
+                                        onChange={handleChangeForm('title')}
+                                        required
+                                    />
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                        }}
+                                    >
+                                        <FormControl sx={{ width: '100%' }}>
+                                            <InputLabel id="demo-multiple-checkbox-label">
+                                                Categorias
+                                            </InputLabel>
+                                            <Select
+                                                labelId="demo-multiple-checkbox-label"
+                                                id="demo-multiple-checkbox"
+                                                multiple
+                                                value={categoriesSelected}
+                                                onChange={handleChange}
+                                                input={
+                                                    <OutlinedInput label="Categorias" />
+                                                }
+                                                renderValue={(selected) =>
+                                                    selected
+                                                        .map(
+                                                            (value) =>
+                                                                value.title
+                                                        )
+                                                        .join(', ')
+                                                }
+                                                MenuProps={MenuProps}
+                                            >
+                                                {categories.map((category) => (
+                                                    <MenuItem
+                                                        key={category.title}
+                                                        value={category}
+                                                        onClick={() => {
+                                                            selected =
+                                                                category.title
+                                                        }}
+                                                    >
+                                                        <Checkbox
+                                                            checked={
+                                                                categoriesSelected
+                                                                    .map(
+                                                                        (
+                                                                            category
+                                                                        ) =>
+                                                                            category.title
+                                                                    )
+                                                                    .indexOf(
+                                                                        category.title
+                                                                    ) > -1
+                                                            }
+                                                        />
+                                                        <ListItemText
+                                                            primary={
+                                                                category.title
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <Button onClick={handleOpenModal}>
+                                            +
+                                        </Button>
+                                    </Box>
+                                    <TextField
+                                        id="outlined-basic"
+                                        label="link"
+                                        variant="outlined"
+                                        type="url"
+                                        value={form.link}
+                                        onChange={handleChangeForm('link')}
+                                    />
+                                    <TextField
+                                        id="outlined-multiline-static"
+                                        label="descrição"
+                                        variant="outlined"
+                                        multiline
+                                        rows={3}
+                                        inputProps={{ maxLength: 300 }}
+                                        helperText={`caracteres restantes ${
+                                            300 - form.description.length
+                                        }`}
+                                        value={form.description}
+                                        onChange={handleChangeForm(
+                                            'description'
+                                        )}
+                                    />
+                                </Box>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                    }}
+                                >
+                                    <Button type="submit">Publicar</Button>
+                                </Box>
+                            </Paper>
+                        </Container>
+                    </Box>
+                    <Container sx={{ marginTop: 5 }}>
                         <Box
                             sx={{
+                                maxWidth: '70vw',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: '1em',
+                                gap: 3,
                             }}
                         >
-                            <TextField
-                                id="outlined-basic"
-                                label="titulo"
-                                variant="outlined"
-                                value={form.title}
-                                onChange={handleChangeForm('title')}
-                                required
-                            />
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <FormControl sx={{ width: '100%' }}>
-                                    <InputLabel id="demo-multiple-checkbox-label">
-                                        Categorias
-                                    </InputLabel>
-                                    <Select
-                                        labelId="demo-multiple-checkbox-label"
-                                        id="demo-multiple-checkbox"
-                                        multiple
-                                        value={categoriesSelected}
-                                        onChange={handleChange}
-                                        input={
-                                            <OutlinedInput label="Categorias" />
-                                        }
-                                        renderValue={(selected) =>
-                                            selected
-                                                .map((value) => value.title)
-                                                .join(', ')
-                                        }
-                                        MenuProps={MenuProps}
-                                    >
-                                        {categories.map((category) => (
-                                            <MenuItem
-                                                key={category.title}
-                                                value={category}
-                                                onClick={() => {
-                                                    selected = category.title
-                                                }}
-                                            >
-                                                <Checkbox
-                                                    checked={
-                                                        categoriesSelected
-                                                            .map(
-                                                                (category) =>
-                                                                    category.title
-                                                            )
-                                                            .indexOf(
-                                                                category.title
-                                                            ) > -1
-                                                    }
-                                                />
-                                                <ListItemText
-                                                    primary={category.title}
-                                                />
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <Button onClick={handleOpenModal}>+</Button>
-                            </Box>
-                            <TextField
-                                id="outlined-basic"
-                                label="link"
-                                variant="outlined"
-                                type="url"
-                                value={form.link}
-                                onChange={handleChangeForm('link')}
-                            />
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="descrição"
-                                variant="outlined"
-                                multiline
-                                rows={3}
-                                inputProps={{ maxLength: 300 }}
-                                helperText={`caracteres restantes ${
-                                    300 - form.description.length
-                                }`}
-                                value={form.description}
-                                onChange={handleChangeForm('description')}
-                            />
+                            <Post />
+                            <Post />
                         </Box>
-                        <Box
-                            sx={{ display: 'flex', justifyContent: 'flex-end' }}
-                        >
-                            <Button type="submit">Publicar</Button>
-                        </Box>
-                    </Paper>
-                </Container>
-            </Box>
+                    </Container>
+                </Box>
+                <Paper
+                    elevation={1}
+                    sx={{
+                        padding: 1,
+                        ['@media (max-width:400px)']: { display: 'none' },
+                    }}
+                >
+                    <Typography>Categoria123456</Typography>
+                </Paper>
+            </Container>
             <Modal
                 open={openModal}
                 onClose={handleCloseModal}

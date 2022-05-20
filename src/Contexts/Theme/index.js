@@ -36,8 +36,8 @@ export default function ToggleColorMode({ children }) {
             <ThemeProvider theme={theme}>
                 <Box
                     sx={{
-                        width: '100vw',
-                        height: '100vh',
+                        width: '100%',
+                        height: '100%',
                         bgcolor: 'background.default',
                         color: 'text.primary',
                     }}
