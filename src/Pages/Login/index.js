@@ -79,7 +79,7 @@ export default function Login() {
     }
 
     return (
-        <Box>
+        <Box sx={{ height: '100vh' }}>
             <ToggleTheme />
             <Container
                 component="form"

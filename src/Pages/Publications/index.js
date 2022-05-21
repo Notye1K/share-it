@@ -20,7 +20,10 @@ import Post from '../../Components/Post'
 import AlertContext from '../../Contexts/AlertContext'
 import LoadingContext from '../../Contexts/LoadingContext'
 import { getCategories, postCategory } from '../../services/categoryService'
-import { postPublication } from '../../services/publicationsService'
+import {
+    getPublications,
+    postPublication,
+} from '../../services/publicationsService'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -65,6 +68,10 @@ export default function Publications() {
     const handleCloseModal = () => setOpenModal(false)
     const [createCategoryInput, setCreateCategoryInput] = useState('')
 
+    const [publications, setPublications] = useState([])
+
+    const [refresh, setRefresh] = useState(true)
+
     const [form, setForm] = useState({
         ...emptyForm,
     })
@@ -90,8 +97,19 @@ export default function Publications() {
                 setOpen(true)
             })
             .finally(stopLoading)
+
+        startLoading()
+        getPublications()
+            .then((response) => {
+                setPublications(response.data)
+            })
+            .catch(() => {
+                setMessage('Houve um problema tente novamente mais tarde')
+                setOpen(true)
+            })
+            .finally(stopLoading)
         // eslint-disable-next-line
-    }, [])
+    }, [refresh])
 
     const handleChangeForm = (prop) => (event) => {
         setForm({ ...form, [prop]: event.target.value })
@@ -117,7 +135,10 @@ export default function Publications() {
                     setOpen(true)
                 }
             })
-            .finally(stopLoading)
+            .finally(() => {
+                stopLoading()
+                setRefresh(!refresh)
+            })
     }
 
     const handleChange = (event) => {
@@ -167,14 +188,23 @@ export default function Publications() {
                     setOpen(true)
                 }
             })
-            .finally(stopLoading)
+            .finally(() => {
+                stopLoading()
+                setRefresh(!refresh)
+            })
     }
     return (
         <>
             <Header />
 
-            <Container sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Box>
+            <Container
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: 2,
+                }}
+            >
+                <Box sx={{ minWidth: '60%' }}>
                     <Box>
                         <Container component="form" onSubmit={handleSubmit}>
                             <Paper
@@ -305,19 +335,38 @@ export default function Publications() {
                                 gap: 3,
                             }}
                         >
-                            <Post />
-                            <Post />
+                            {publications.map((post) => (
+                                <Post
+                                    key={post.id}
+                                    setRefresh={setRefresh}
+                                    refresh={refresh}
+                                    post={post}
+                                />
+                            ))}
                         </Box>
                     </Container>
                 </Box>
                 <Paper
-                    elevation={1}
+                    elevation={2}
                     sx={{
                         padding: 1,
-                        ['@media (max-width:400px)']: { display: 'none' },
+                        ['@media (max-width:500px)']: { display: 'none' },
+                        maxHeight: '393px',
+                        position: 'sticky',
+                        top: '20px',
+                        minWidth: '15%',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1,
+                        overflowY: 'auto',
                     }}
                 >
-                    <Typography>Categoria123456</Typography>
+                    {categories.map((category) => (
+                        <Typography key={category.id}>
+                            {category.title}
+                        </Typography>
+                    ))}
                 </Paper>
             </Container>
             <Modal

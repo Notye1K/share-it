@@ -10,3 +10,18 @@ export function postPublication(body) {
 export function getPublications() {
     return axios.get(apiUrl + `/publications`)
 }
+
+export function getLike(publicationId) {
+    return axios.get(
+        apiUrl + `/publications/${publicationId}/like`,
+        getConfig()
+    )
+}
+
+export function postLike(publicationId, like) {
+    return axios.post(
+        apiUrl + `/publications/${publicationId}/like`,
+        like !== undefined && { like },
+        getConfig()
+    )
+}

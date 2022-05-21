@@ -79,7 +79,7 @@ export default function Register() {
     }
 
     return (
-        <Box>
+        <Box sx={{ height: '100vh' }}>
             <ToggleTheme />
             <Container
                 component="form"

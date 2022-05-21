@@ -1,24 +1,112 @@
-import { Box, Paper, Typography } from '@mui/material'
+import { Box, Button, Link, Paper, Typography } from '@mui/material'
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined'
+import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import ThumbDownIcon from '@mui/icons-material/ThumbDown'
+import { useContext, useEffect, useState } from 'react'
+import { getLike, postLike } from '../../services/publicationsService'
+import LoadingContext from '../../Contexts/LoadingContext'
+import AlertContext from '../../Contexts/AlertContext'
 
-export default function Post({}) {
+export default function Post({ post, setRefresh, refresh }) {
+    const { setOpen, setMessage } = useContext(AlertContext)
+    const { stopLoading, startLoading } = useContext(LoadingContext)
+
+    const [like, setLike] = useState(null)
+
+    useEffect(() => {
+        startLoading()
+        getLike(post.id)
+            .then((response) => setLike(response.data))
+            .catch(() => {
+                setMessage('Houve um problema tente novamente mais tarde')
+                setOpen(true)
+            })
+            .finally(stopLoading)
+        // eslint-disable-next-line
+    }, [refresh])
+
+    function handleLike(thumb) {
+        if ((thumb === 'up' && like) || (thumb === 'down' && like === false)) {
+            startLoading()
+            postLike(post.id)
+                .then()
+                .catch(() => {
+                    setMessage('Houve um problema tente novamente mais tarde')
+                    setOpen(true)
+                })
+                .finally(stopLoading)
+            setRefresh(!refresh)
+        } else if (thumb === 'up') {
+            startLoading()
+            postLike(post.id, true)
+                .then()
+                .catch(() => {
+                    setMessage('Houve um problema tente novamente mais tarde')
+                    setOpen(true)
+                })
+                .finally(stopLoading)
+            setRefresh(!refresh)
+        } else if (thumb === 'down') {
+            startLoading()
+            postLike(post.id, false)
+                .then()
+                .catch(() => {
+                    setMessage('Houve um problema tente novamente mais tarde')
+                    setOpen(true)
+                })
+                .finally(stopLoading)
+            setRefresh(!refresh)
+        }
+    }
+
     return (
-        <Paper sx={{ padding: 1 }}>
-            <Typography>Titulo</Typography>
-            <Typography>
-                Categoria123456 Categoria123456 Categoria123456
+        <Paper elevation={2} sx={{ padding: 1 }}>
+            <Typography variant="h5" sx={{ marginBottom: 1 }}>
+                {post.title}
             </Typography>
-            <Typography>LINK</Typography>
-            <Typography>
-                55555555555555 555555555555555555555555555555555555555555555
-                5555555555555555555555555555555555555555555555555555555555555555555555555
-                5555555555555555555555555555555555555555555555555555555555
-                5555555555555555555555555555555555555555555555555555555555555555555555555555555
-                5555555555555555555555555555555
+            <Typography variant="subtitle1" sx={{ marginBottom: 2 }}>
+                {post.categoriesPublications
+                    .map(
+                        (categoryPublication) =>
+                            categoryPublication.category.title
+                    )
+                    .join(' ')}
             </Typography>
+            <Typography
+                variant="subtitle2"
+                sx={{
+                    color: 'text.secondary',
+                    marginBottom: 2,
+                    overflowWrap: 'anywhere',
+                }}
+            >
+                {post.text}
+            </Typography>
+            {post.link && (
+                <Link
+                    href={post.link}
+                    underline="hover"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    LINK
+                </Link>
+            )}
 
-            <Typography>UP</Typography>
-            <Typography>down</Typography>
-            <Typography>10000</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button onClick={() => handleLike('up')}>
+                    {like ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+                </Button>
+                <Typography>{post.likes}</Typography>
+                <Button onClick={() => handleLike('down')}>
+                    {like === false ? (
+                        <ThumbDownIcon />
+                    ) : (
+                        <ThumbDownOffAltOutlinedIcon />
+                    )}
+                </Button>
+            </Box>
         </Paper>
     )
 }
