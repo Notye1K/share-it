@@ -3,17 +3,24 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined'
 import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import ThumbDownIcon from '@mui/icons-material/ThumbDown'
-import { useContext, useEffect, useState } from 'react'
-import { getLike, postLike } from '../../services/publicationsService'
+import React, { useContext, useEffect, useState } from 'react'
+import {
+    deletePublication,
+    getLike,
+    postLike,
+} from '../../services/publicationsService'
 import LoadingContext from '../../Contexts/LoadingContext'
 import AlertContext from '../../Contexts/AlertContext'
 import { Link as RouterLink } from 'react-router-dom'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 export default function Post({ post, setRefresh, refresh }) {
     const { setOpen, setMessage } = useContext(AlertContext)
     const { stopLoading, startLoading } = useContext(LoadingContext)
 
     const [like, setLike] = useState(null)
+
+    const userId = localStorage.getItem('userId')
 
     useEffect(() => {
         startLoading()
@@ -61,25 +68,48 @@ export default function Post({ post, setRefresh, refresh }) {
         }
     }
 
+    function handleDelete() {
+        startLoading()
+        deletePublication(post.id)
+            .then()
+            .catch((err) => {
+                if (err.response.status === 500) {
+                    setMessage('Houve um problema tente novamente mais tarde')
+                    setOpen(true)
+                } else {
+                    setMessage(err.response.data)
+                    setOpen(true)
+                }
+            })
+            .finally(stopLoading)
+        setRefresh(!refresh)
+    }
+
     return (
         <Paper elevation={2} sx={{ padding: 1 }}>
-            <Typography variant="h5" sx={{ marginBottom: 1 }}>
-                {post.title}
-            </Typography>
-            <Box sx={{ marginBottom: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="h5" sx={{ marginBottom: 1 }}>
+                    {post.title}
+                </Typography>
+                {+userId === post.userId && (
+                    <Button onClick={handleDelete}>
+                        <DeleteIcon />
+                    </Button>
+                )}
+            </Box>
+            <Box sx={{ marginBottom: 1, fontSize: '14px' }}>
                 {post.categoriesPublications.map(
                     (categoryPublication, index) => (
-                        <>
+                        <React.Fragment key={categoryPublication.id}>
                             {index !== 0 ? ' - ' : ''}
                             <Link
                                 underline="hover"
                                 component={RouterLink}
                                 to={`/categories/${categoryPublication.category.title}`}
-                                key={categoryPublication.id}
                             >
                                 {categoryPublication.category.title.toUpperCase()}
                             </Link>
-                        </>
+                        </React.Fragment>
                     )
                 )}
             </Box>
@@ -103,7 +133,6 @@ export default function Post({ post, setRefresh, refresh }) {
                     LINK
                 </Link>
             )}
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button onClick={() => handleLike('up')}>
                     {like ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}

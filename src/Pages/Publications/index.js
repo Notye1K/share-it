@@ -225,6 +225,7 @@ export default function Publications() {
                                     value={form.title}
                                     onChange={handleChangeForm('title')}
                                     required
+                                    autoComplete="off"
                                 />
                                 <Box
                                     sx={{
@@ -291,6 +292,7 @@ export default function Publications() {
                                     type="url"
                                     value={form.link}
                                     onChange={handleChangeForm('link')}
+                                    autoComplete="off"
                                 />
                                 <TextField
                                     id="outlined-multiline-static"
@@ -363,6 +365,7 @@ export default function Publications() {
                             variant="outlined"
                             value={createCategoryInput}
                             onChange={createCategoryChange}
+                            autoComplete="off"
                         />
                         <Button onClick={createCategoryButtonClick}>
                             Criar

@@ -29,3 +29,7 @@ export function postLike(publicationId, like) {
 export function getPublicationsByCategory(category) {
     return axios.get(apiUrl + `/publications/categories/${category}`)
 }
+
+export function deletePublication(publicationId) {
+    return axios.delete(apiUrl + `/publications/${publicationId}`, getConfig())
+}

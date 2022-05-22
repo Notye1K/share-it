@@ -64,7 +64,8 @@ export default function Login() {
         body.password = values.password
         login(body)
             .then((response) => {
-                localStorage.setItem('token', response.data)
+                localStorage.setItem('token', response.data.token)
+                localStorage.setItem('userId', response.data.userId)
                 navigate('/')
             })
             .catch((err) => {
@@ -81,7 +82,7 @@ export default function Login() {
 
     return (
         <Box sx={{ height: '100vh' }}>
-            <Box sx={{position: 'absolute', top: 1, left: 20}}>
+            <Box sx={{ position: 'absolute', top: 1, left: 20 }}>
                 <ToggleTheme />
             </Box>
             <Container
@@ -93,7 +94,7 @@ export default function Login() {
                     gap: '0.5em',
                     position: 'relative',
                     top: '50%',
-                    transform: 'translateY(-50%)'
+                    transform: 'translateY(-50%)',
                 }}
                 onSubmit={handleSubmit}
             >
@@ -143,11 +144,7 @@ export default function Login() {
                         alignItems: 'center',
                     }}
                 >
-                    <Button
-                        variant="outlined"
-                        type="submit"
-                        size="string"
-                    >
+                    <Button variant="outlined" type="submit" size="string">
                         Login
                     </Button>
                     <Link
