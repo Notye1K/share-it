@@ -6,11 +6,11 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Typography,
+    Link,
 } from '@mui/material'
 import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone'
 import ToggleTheme from '../ToggleTheme'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 export default function Header() {
@@ -35,12 +35,15 @@ export default function Header() {
                 width: '90%',
                 display: 'flex',
                 justifyContent: 'space-between',
+                alignItems: 'center',
                 marginLeft: 'auto',
                 marginRight: 'auto',
                 marginBottom: '1em',
             }}
         >
-            <Typography>SHARE-IT</Typography>
+            <Link underline="hover" component={RouterLink} to="/">
+                SHARE-IT
+            </Link>
             <ToggleTheme />
             <Button onClick={handleClickOpen}>
                 <LogoutTwoToneIcon />

@@ -11,10 +11,6 @@ const Alert = forwardRef(function Alert(props, ref) {
 export default function SnackbarAlert() {
     const { open, handleClose, message } = useContext(AlertContext)
 
-    // const handleClick = () => {
-    //     setOpen(true)
-    // }
-
     return (
         <Stack spacing={2} sx={{ width: '100%' }}>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

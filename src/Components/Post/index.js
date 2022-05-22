@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from 'react'
 import { getLike, postLike } from '../../services/publicationsService'
 import LoadingContext from '../../Contexts/LoadingContext'
 import AlertContext from '../../Contexts/AlertContext'
+import { Link as RouterLink } from 'react-router-dom'
 
 export default function Post({ post, setRefresh, refresh }) {
     const { setOpen, setMessage } = useContext(AlertContext)
@@ -65,14 +66,23 @@ export default function Post({ post, setRefresh, refresh }) {
             <Typography variant="h5" sx={{ marginBottom: 1 }}>
                 {post.title}
             </Typography>
-            <Typography variant="subtitle1" sx={{ marginBottom: 2 }}>
-                {post.categoriesPublications
-                    .map(
-                        (categoryPublication) =>
-                            categoryPublication.category.title
+            <Box sx={{ marginBottom: 1 }}>
+                {post.categoriesPublications.map(
+                    (categoryPublication, index) => (
+                        <>
+                            {index !== 0 ? ' - ' : ''}
+                            <Link
+                                underline="hover"
+                                component={RouterLink}
+                                to={`/categories/${categoryPublication.category.title}`}
+                                key={categoryPublication.id}
+                            >
+                                {categoryPublication.category.title.toUpperCase()}
+                            </Link>
+                        </>
                     )
-                    .join(' ')}
-            </Typography>
+                )}
+            </Box>
             <Typography
                 variant="subtitle2"
                 sx={{

@@ -25,3 +25,7 @@ export function postLike(publicationId, like) {
         getConfig()
     )
 }
+
+export function getPublicationsByCategory(category) {
+    return axios.get(apiUrl + `/publications/categories/${category}`)
+}

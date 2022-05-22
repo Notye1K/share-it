@@ -17,6 +17,7 @@ import {
 import { useContext, useEffect, useState } from 'react'
 import Header from '../../Components/Header'
 import Post from '../../Components/Post'
+import Sidebar from '../../Components/Sidebar'
 import AlertContext from '../../Contexts/AlertContext'
 import LoadingContext from '../../Contexts/LoadingContext'
 import { getCategories, postCategory } from '../../services/categoryService'
@@ -194,7 +195,7 @@ export default function Publications() {
             })
     }
     return (
-        <>
+        <Box sx={{ minHeight: '100vh' }}>
             <Header />
 
             <Container
@@ -205,127 +206,116 @@ export default function Publications() {
                 }}
             >
                 <Box sx={{ minWidth: '60%' }}>
-                    <Box>
-                        <Container component="form" onSubmit={handleSubmit}>
-                            <Paper
-                                elevation={1}
-                                sx={{ padding: 1, maxWidth: '70vw' }}
+                    <Container component="form" onSubmit={handleSubmit}>
+                        <Paper
+                            elevation={1}
+                            sx={{ padding: 1, maxWidth: '70vw' }}
+                        >
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '1em',
+                                }}
                             >
+                                <TextField
+                                    id="outlined-basic"
+                                    label="titulo"
+                                    variant="outlined"
+                                    value={form.title}
+                                    onChange={handleChangeForm('title')}
+                                    required
+                                />
                                 <Box
                                     sx={{
                                         display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '1em',
+                                        justifyContent: 'space-between',
                                     }}
                                 >
-                                    <TextField
-                                        id="outlined-basic"
-                                        label="titulo"
-                                        variant="outlined"
-                                        value={form.title}
-                                        onChange={handleChangeForm('title')}
-                                        required
-                                    />
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                        }}
-                                    >
-                                        <FormControl sx={{ width: '100%' }}>
-                                            <InputLabel id="demo-multiple-checkbox-label">
-                                                Categorias
-                                            </InputLabel>
-                                            <Select
-                                                labelId="demo-multiple-checkbox-label"
-                                                id="demo-multiple-checkbox"
-                                                multiple
-                                                value={categoriesSelected}
-                                                onChange={handleChange}
-                                                input={
-                                                    <OutlinedInput label="Categorias" />
-                                                }
-                                                renderValue={(selected) =>
-                                                    selected
-                                                        .map(
-                                                            (value) =>
-                                                                value.title
-                                                        )
-                                                        .join(', ')
-                                                }
-                                                MenuProps={MenuProps}
-                                            >
-                                                {categories.map((category) => (
-                                                    <MenuItem
-                                                        key={category.title}
-                                                        value={category}
-                                                        onClick={() => {
-                                                            selected =
-                                                                category.title
-                                                        }}
-                                                    >
-                                                        <Checkbox
-                                                            checked={
-                                                                categoriesSelected
-                                                                    .map(
-                                                                        (
-                                                                            category
-                                                                        ) =>
-                                                                            category.title
-                                                                    )
-                                                                    .indexOf(
+                                    <FormControl sx={{ width: '100%' }}>
+                                        <InputLabel id="demo-multiple-checkbox-label">
+                                            Categorias
+                                        </InputLabel>
+                                        <Select
+                                            labelId="demo-multiple-checkbox-label"
+                                            id="demo-multiple-checkbox"
+                                            multiple
+                                            value={categoriesSelected}
+                                            onChange={handleChange}
+                                            input={
+                                                <OutlinedInput label="Categorias" />
+                                            }
+                                            renderValue={(selected) =>
+                                                selected
+                                                    .map((value) => value.title)
+                                                    .join(', ')
+                                            }
+                                            MenuProps={MenuProps}
+                                        >
+                                            {categories.map((category) => (
+                                                <MenuItem
+                                                    key={category.title}
+                                                    value={category}
+                                                    onClick={() => {
+                                                        selected =
+                                                            category.title
+                                                    }}
+                                                >
+                                                    <Checkbox
+                                                        checked={
+                                                            categoriesSelected
+                                                                .map(
+                                                                    (
+                                                                        category
+                                                                    ) =>
                                                                         category.title
-                                                                    ) > -1
-                                                            }
-                                                        />
-                                                        <ListItemText
-                                                            primary={
-                                                                category.title
-                                                            }
-                                                        />
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                        <Button onClick={handleOpenModal}>
-                                            +
-                                        </Button>
-                                    </Box>
-                                    <TextField
-                                        id="outlined-basic"
-                                        label="link"
-                                        variant="outlined"
-                                        type="url"
-                                        value={form.link}
-                                        onChange={handleChangeForm('link')}
-                                    />
-                                    <TextField
-                                        id="outlined-multiline-static"
-                                        label="descrição"
-                                        variant="outlined"
-                                        multiline
-                                        rows={3}
-                                        inputProps={{ maxLength: 300 }}
-                                        helperText={`caracteres restantes ${
-                                            300 - form.description.length
-                                        }`}
-                                        value={form.description}
-                                        onChange={handleChangeForm(
-                                            'description'
-                                        )}
-                                    />
+                                                                )
+                                                                .indexOf(
+                                                                    category.title
+                                                                ) > -1
+                                                        }
+                                                    />
+                                                    <ListItemText
+                                                        primary={category.title}
+                                                    />
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <Button onClick={handleOpenModal}>+</Button>
                                 </Box>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-end',
-                                    }}
-                                >
-                                    <Button type="submit">Publicar</Button>
-                                </Box>
-                            </Paper>
-                        </Container>
-                    </Box>
+                                <TextField
+                                    id="outlined-basic"
+                                    label="link"
+                                    variant="outlined"
+                                    type="url"
+                                    value={form.link}
+                                    onChange={handleChangeForm('link')}
+                                />
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    label="descrição"
+                                    variant="outlined"
+                                    multiline
+                                    rows={3}
+                                    inputProps={{ maxLength: 300 }}
+                                    helperText={`caracteres restantes ${
+                                        300 - form.description.length
+                                    }`}
+                                    value={form.description}
+                                    onChange={handleChangeForm('description')}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                }}
+                            >
+                                <Button type="submit">Publicar</Button>
+                            </Box>
+                        </Paper>
+                    </Container>
                     <Container sx={{ marginTop: 5 }}>
                         <Box
                             sx={{
@@ -346,28 +336,7 @@ export default function Publications() {
                         </Box>
                     </Container>
                 </Box>
-                <Paper
-                    elevation={2}
-                    sx={{
-                        padding: 1,
-                        ['@media (max-width:500px)']: { display: 'none' },
-                        maxHeight: '393px',
-                        position: 'sticky',
-                        top: '20px',
-                        minWidth: '15%',
-                        textAlign: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 1,
-                        overflowY: 'auto',
-                    }}
-                >
-                    {categories.map((category) => (
-                        <Typography key={category.id}>
-                            {category.title}
-                        </Typography>
-                    ))}
-                </Paper>
+                <Sidebar refresh={refresh} />
             </Container>
             <Modal
                 open={openModal}
@@ -401,6 +370,6 @@ export default function Publications() {
                     </Container>
                 </Box>
             </Modal>
-        </>
+        </Box>
     )
 }

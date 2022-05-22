@@ -38,7 +38,8 @@ export default function ToggleColorMode({ children }) {
                     sx={{
                         width: '100%',
                         height: '100%',
-                        bgcolor: 'background.default',
+                        bgcolor:
+                            mode === 'dark' ? 'background.default' : '#E5E5E5',
                         color: 'text.primary',
                     }}
                 >

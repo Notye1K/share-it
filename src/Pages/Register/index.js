@@ -26,6 +26,7 @@ export default function Register() {
         if (localStorage.getItem('token')) {
             navigate('/')
         }
+        // eslint-disable-next-line
     }, [])
 
     const [values, setValues] = useState({
@@ -80,14 +81,19 @@ export default function Register() {
 
     return (
         <Box sx={{ height: '100vh' }}>
-            <ToggleTheme />
+            <Box sx={{ position: 'absolute', top: 1, left: 20 }}>
+                <ToggleTheme />
+            </Box>
             <Container
                 component="form"
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '50%',
+                    width: '70%',
                     gap: '0.5em',
+                    position: 'relative',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
                 }}
                 onSubmit={handleSubmit}
             >
@@ -101,7 +107,7 @@ export default function Register() {
                     onChange={handleChange('email')}
                 />
                 <TextField
-                    id="outlined-basic"
+                    id="outlined-basic2"
                     label="NickName"
                     variant="outlined"
                     required
@@ -142,7 +148,7 @@ export default function Register() {
                         Confirmar Senha
                     </InputLabel>
                     <OutlinedInput
-                        id="outlined-adornment-password"
+                        id="outlined-adornment-password2"
                         type={values.showPassword ? 'text' : 'password'}
                         value={values.confirmPassword}
                         required
@@ -175,9 +181,10 @@ export default function Register() {
                     }}
                 >
                     <Button
-                        sx={{ width: '20%' }}
+                        
                         variant="outlined"
                         type="submit"
+                        size='string'
                     >
                         Registrar
                     </Button>

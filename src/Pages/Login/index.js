@@ -25,6 +25,7 @@ export default function Login() {
         if (localStorage.getItem('token')) {
             navigate('/')
         }
+        // eslint-disable-next-line
     }, [])
 
     const [values, setValues] = useState({
@@ -80,14 +81,19 @@ export default function Login() {
 
     return (
         <Box sx={{ height: '100vh' }}>
-            <ToggleTheme />
+            <Box sx={{position: 'absolute', top: 1, left: 20}}>
+                <ToggleTheme />
+            </Box>
             <Container
                 component="form"
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '50%',
+                    width: '70%',
                     gap: '0.5em',
+                    position: 'relative',
+                    top: '50%',
+                    transform: 'translateY(-50%)'
                 }}
                 onSubmit={handleSubmit}
             >
@@ -138,9 +144,9 @@ export default function Login() {
                     }}
                 >
                     <Button
-                        sx={{ width: '20%' }}
                         variant="outlined"
                         type="submit"
+                        size="string"
                     >
                         Login
                     </Button>
