@@ -105,6 +105,10 @@ export default function Post({ post, setRefresh, refresh }) {
                             <Link
                                 underline="hover"
                                 component={RouterLink}
+                                sx={{
+                                    fontFamily:
+                                        'Roboto, Helvetica, Arial, sans-serif',
+                                }}
                                 to={`/categories/${categoryPublication.category.title}`}
                             >
                                 {categoryPublication.category.title.toUpperCase()}

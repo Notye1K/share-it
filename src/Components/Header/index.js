@@ -56,7 +56,12 @@ export default function Header() {
                     marginBottom: '1em',
                 }}
             >
-                <Link underline="hover" component={RouterLink} to="/">
+                <Link
+                    underline="hover"
+                    sx={{ fontFamily: 'Roboto, Helvetica, Arial, sans-serif' }}
+                    component={RouterLink}
+                    to="/"
+                >
                     SHARE-IT
                 </Link>
                 <ToggleTheme />

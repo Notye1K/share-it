@@ -58,6 +58,7 @@ export default function Sidebar({ refresh }) {
                     component={RouterLink}
                     to={`/categories/${category.title}`}
                     key={category.id}
+                    sx={{ fontFamily: 'Roboto, Helvetica, Arial, sans-serif' }}
                 >
                     {category.title.toUpperCase()}
                 </Link>
