@@ -22,6 +22,9 @@ export default function Categories() {
         startLoading()
         getPublicationsByCategory(category)
             .then((response) => {
+                if (!response.data) {
+                    return
+                }
                 const posts = response.data.categoriesPublications.map(
                     (element) => element.publication
                 )

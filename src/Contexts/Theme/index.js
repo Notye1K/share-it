@@ -41,6 +41,7 @@ export default function ToggleColorMode({ children }) {
                         bgcolor:
                             mode === 'dark' ? 'background.default' : '#E5E5E5',
                         color: 'text.primary',
+                        paddingTop: '1em',
                     }}
                 >
                     {children}
