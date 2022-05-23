@@ -21,6 +21,12 @@ import { getCategories } from '../../services/categoryService'
 
 export default function Header() {
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!localStorage.getItem('token')) navigate('/login')
+        // eslint-disable-next-line
+    }, [])
+
     const [open, setOpen] = useState(false)
 
     const handleClickOpen = () => {
