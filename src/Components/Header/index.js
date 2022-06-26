@@ -18,12 +18,19 @@ import { useContext, useEffect, useState } from 'react'
 import LoadingContext from '../../Contexts/LoadingContext'
 import AlertContext from '../../Contexts/AlertContext'
 import { getCategories } from '../../services/categoryService'
+import { checkToken } from '../../services/userService'
 
 export default function Header() {
     const navigate = useNavigate()
 
     useEffect(() => {
         if (!localStorage.getItem('token')) navigate('/login')
+        else {
+            checkToken().catch(() => {
+                localStorage.removeItem('token')
+                navigate('/login')
+            })
+        }
         // eslint-disable-next-line
     }, [])
 

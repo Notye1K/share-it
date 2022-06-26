@@ -185,12 +185,7 @@ export default function Register() {
                         alignItems: 'center',
                     }}
                 >
-                    <Button
-                        
-                        variant="outlined"
-                        type="submit"
-                        size='string'
-                    >
+                    <Button variant="outlined" type="submit" size="string">
                         Registrar
                     </Button>
                     <Link underline="hover" component={RouterLink} to="/login">
