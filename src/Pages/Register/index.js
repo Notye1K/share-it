@@ -57,6 +57,11 @@ export default function Register() {
 
     function handleSubmit(event) {
         event.preventDefault()
+        if (values.password !== values.confirmPassword) {
+            setMessage('As senhas digitadas não são iguais')
+            setOpen(true)
+            return
+        }
         startLoading()
         const body = {
             email: values.email,
