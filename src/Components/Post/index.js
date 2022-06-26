@@ -38,40 +38,45 @@ export default function Post({ post, setRefresh, refresh }) {
         if ((thumb === 'up' && like) || (thumb === 'down' && like === false)) {
             startLoading()
             postLike(post.id)
-                .then()
+                .then(() => {
+                    setRefresh(!refresh)
+                })
                 .catch(() => {
                     setMessage('Houve um problema tente novamente mais tarde')
                     setOpen(true)
                 })
                 .finally(stopLoading)
-            setRefresh(!refresh)
         } else if (thumb === 'up') {
             startLoading()
             postLike(post.id, true)
-                .then()
+                .then(() => {
+                    setRefresh(!refresh)
+                })
                 .catch(() => {
                     setMessage('Houve um problema tente novamente mais tarde')
                     setOpen(true)
                 })
                 .finally(stopLoading)
-            setRefresh(!refresh)
         } else if (thumb === 'down') {
             startLoading()
             postLike(post.id, false)
-                .then()
+                .then(() => {
+                    setRefresh(!refresh)
+                })
                 .catch(() => {
                     setMessage('Houve um problema tente novamente mais tarde')
                     setOpen(true)
                 })
                 .finally(stopLoading)
-            setRefresh(!refresh)
         }
     }
 
     function handleDelete() {
         startLoading()
         deletePublication(post.id)
-            .then()
+            .then(() => {
+                setRefresh(!refresh)
+            })
             .catch((err) => {
                 if (err.response.status === 500) {
                     setMessage('Houve um problema tente novamente mais tarde')
@@ -82,7 +87,6 @@ export default function Post({ post, setRefresh, refresh }) {
                 }
             })
             .finally(stopLoading)
-        setRefresh(!refresh)
     }
 
     return (
