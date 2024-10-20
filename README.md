@@ -4,7 +4,7 @@ Social media where the user follows content instead of people.
 
 ![share-it](https://user-images.githubusercontent.com/71580986/175840943-61157127-c6a6-4f32-8151-6ca2678ea6fd.gif)
 
-Try it out now at https://share-it-two.vercel.app/
+Try it out now at https://share-it-two.vercel.app/  -- backend offline! :(
 
 ## About
 
